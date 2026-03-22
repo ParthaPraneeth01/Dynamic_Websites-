@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+    <!-- Link to our modern stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for modern typography -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  </head>
+  <body>
+
+    <div class="converter-card">
+      <h1>Temperature Converter</h1>
+
+      <!-- Input Section -->
+      <div class="input-section">
+        <input type="number" id="inputValue" placeholder="Enter temperature" />
+
+        <select id="unitSelect">
+          <option value="C">Celsius (°C)</option>
+          <option value="F">Fahrenheit (°F)</option>
+          <option value="K">Kelvin (K)</option>
+        </select>
+      </div>
+
+      <div class="action-buttons">
+        <button class="btn-primary" onclick="convert()">Convert</button>
+        <button class="btn-secondary" onclick="reset()">Reset</button>
+      </div>
+
+      <!-- Error Message -->
+      <p id="errorMsg"></p>
+
+      <!-- Result Cards -->
+      <div id="results" class="results-grid">
+        <div class="result-card">
+          <h3>Celsius</h3>
+          <p id="celsiusResult">--</p>
+        </div>
+        <div class="result-card">
+          <h3>Fahrenheit</h3>
+          <p id="fahrenheitResult">--</p>
+        </div>
+        <div class="result-card">
+          <h3>Kelvin</h3>
+          <p id="kelvinResult">--</p>
+        </div>
+      </div>
+
+      <!-- Formula Section -->
+      <div id="formulaBox" class="formula-box">
+        <h3>Formula Used</h3>
+        <p id="formulaText">--</p>
+      </div>
+
+      <!-- History Section -->
+      <div id="historySection" class="history-section">
+        <div class="history-header">
+          <h3>Recent Conversions</h3>
+          <button class="btn-clear" onclick="clearHistory()">Clear</button>
+        </div>
+        <ul id="historyList" class="history-list"></ul>
+      </div>
+    </div>
+
+    <script>
+      function convert() {
+        let inputValue = document.getElementById("inputValue").value;
+        let unit       = document.getElementById("unitSelect").value;
+        let temp       = parseFloat(inputValue);
+
+        // Validation
+        if (inputValue === "" || isNaN(temp)) {
+          let errorMsg = document.getElementById("errorMsg");
+          errorMsg.textContent = "Please enter a valid temperature!";
+          errorMsg.classList.add("show");
+          return;
+        } else {
+          let errorMsg = document.getElementById("errorMsg");
+          errorMsg.textContent = "";
+          errorMsg.classList.remove("show");
+        }
+
+        // Conversion Logic
+        let celsius, fahrenheit, kelvin;
+        let formula;
+
+        if (unit === "C") {
+          celsius    = temp;
+          fahrenheit = (temp * 9/5) + 32;
+          kelvin     = temp + 273.15;
+          formula    = "F = (C × 9/5) + 32 | K = C + 273.15";
+
+        } else if (unit === "F") {
+          celsius    = (temp - 32) * 5/9;
+          fahrenheit = temp;
+          kelvin     = (temp - 32) * 5/9 + 273.15;
+          formula    = "C = (F - 32) × 5/9 | K = (F - 32) × 5/9 + 273.15";
+
+        } else if (unit === "K") {
+          celsius    = temp - 273.15;
+          fahrenheit = (temp - 273.15) * 9/5 + 32;
+          kelvin     = temp;
+          formula    = "C = K - 273.15 | F = (K - 273.15) × 9/5 + 32";
+        }
+
+        // Show Results
+        document.getElementById("celsiusResult").textContent    = celsius.toFixed(2) + " °C";
+        document.getElementById("fahrenheitResult").textContent = fahrenheit.toFixed(2) + " °F";
+        document.getElementById("kelvinResult").textContent     = kelvin.toFixed(2) + " K";
+        document.getElementById("formulaText").textContent      = formula;
+
+        // Add to History
+        let historyList = document.getElementById("historyList");
+        let listItem    = document.createElement("li");
+        listItem.innerHTML = `<span class="history-input">${temp} °${unit}</span> <span class="history-arrow">→</span> <span class="history-outputs">${celsius.toFixed(1)}°C | ${fahrenheit.toFixed(1)}°F | ${kelvin.toFixed(1)}K</span>`;
+        
+        // Add animation class
+        listItem.classList.add("history-item-new");
+        historyList.prepend(listItem);
+        
+        // Remove animation class after it plays so it doesn't replay
+        setTimeout(() => {
+          listItem.classList.remove("history-item-new");
+        }, 300);
+      }
+
+      // Reset Function
+      function reset() {
+        document.getElementById("inputValue").value             = "";
+        document.getElementById("celsiusResult").textContent    = "--";
+        document.getElementById("fahrenheitResult").textContent = "--";
+        document.getElementById("kelvinResult").textContent     = "--";
+        document.getElementById("formulaText").textContent      = "--";
+        let errorMsg = document.getElementById("errorMsg");
+        errorMsg.textContent = "";
+        errorMsg.classList.remove("show");
+      }
+
+      // Clear History
+      function clearHistory() {
+        document.getElementById("historyList").innerHTML = "";
+      }
+
+    </script>
+  </body>
+</html>
