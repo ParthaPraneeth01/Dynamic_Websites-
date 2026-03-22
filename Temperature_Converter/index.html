@@ -1,149 +1,550 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temperature Converter</title>
-    <!-- Link to our modern stylesheet -->
-    <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts for modern typography -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  </head>
-  <body>
 
-    <div class="converter-card">
-      <h1>Temperature Converter</h1>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temperature Converter</title>
+  <!-- Google Fonts for modern typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* Base Variables for a modern dynamic theme */
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --error-color: #ef4444;
+      --error-bg: #451a1a;
+      --success-color: #10b981;
+      --accent: #8b5cf6;
+    }
 
-      <!-- Input Section -->
-      <div class="input-section">
-        <input type="number" id="inputValue" placeholder="Enter temperature" />
+    /* Global Styles */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--bg-color);
+      background-image:
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text-main);
+      padding: 1.5rem;
+      box-sizing: border-box;
+    }
 
-        <select id="unitSelect">
-          <option value="C">Celsius (°C)</option>
-          <option value="F">Fahrenheit (°F)</option>
-          <option value="K">Kelvin (K)</option>
-        </select>
+    /* Main Container / Card */
+    .converter-card {
+      background: var(--card-bg);
+      width: 100%;
+      max-width: 600px;
+      border-radius: 24px;
+      padding: 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(10px);
+      position: relative;
+      overflow: hidden;
+      animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Header */
+    h1 {
+      text-align: center;
+      font-size: 2.25rem;
+      font-weight: 700;
+      margin: 0 0 2rem 0;
+      background: linear-gradient(135deg, #a5b4fc 0%, #c4b5fd 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.025em;
+    }
+
+    /* Inputs */
+    .input-section {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 480px) {
+      .input-section {
+        flex-direction: column;
+      }
+    }
+
+    input[type="number"],
+    select {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      font-size: 1rem;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      outline: none;
+    }
+
+    input[type="number"]::placeholder {
+      color: #64748b;
+    }
+
+    input[type="number"]:focus,
+    select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+      background: rgba(15, 23, 42, 0.8);
+    }
+
+    select {
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      background-size: 1.25rem;
+      padding-right: 2.5rem;
+    }
+
+    select option {
+      background: var(--card-bg);
+      color: var(--text-main);
+    }
+
+    /* Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    button {
+      flex: 1;
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+      box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.3), 0 2px 4px -2px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.4), 0 4px 6px -4px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--text-muted);
+    }
+
+    /* Error Message */
+    #errorMsg {
+      color: var(--error-color);
+      background: var(--error-bg);
+      padding: 0;
+      border-radius: 8px;
+      text-align: center;
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin: 0 0 1.5rem 0;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      border: 1px solid transparent;
+    }
+
+    #errorMsg.show {
+      padding: 0.75rem;
+      max-height: 50px;
+      opacity: 1;
+      border-color: rgba(239, 68, 68, 0.3);
+    }
+
+    /* Results Grid */
+    .results-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    @media (max-width: 500px) {
+      .results-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .result-card {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.5rem 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .result-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--text-muted);
+      background: rgba(15, 23, 42, 0.6);
+    }
+
+    .result-card:hover::before {
+      opacity: 1;
+    }
+
+    .result-card h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .result-card p {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    /* Formula Section */
+    .formula-box {
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin-bottom: 2rem;
+      border-left: 4px solid var(--primary);
+    }
+
+    .formula-box h3 {
+      margin: 0 0 0.5rem 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .formula-box p {
+      margin: 0;
+      font-family: 'SFMono-Regular', Consolas, "Liberation Mono", Menlo, Courier, monospace;
+      font-size: 1rem;
+      color: #c4b5fd;
+      line-height: 1.5;
+    }
+
+    /* History Section */
+    .history-section {
+      border-top: 1px solid var(--card-border);
+      padding-top: 1.5rem;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .history-header h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .btn-clear {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--card-border);
+      flex: none;
+    }
+
+    .btn-clear:hover {
+      color: #fff;
+      border-color: #fff;
+    }
+
+    .history-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 180px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    /* Scrollbar styling for history list */
+    .history-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .history-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .history-list::-webkit-scrollbar-thumb {
+      background: var(--card-border);
+      border-radius: 3px;
+    }
+
+    .history-list::-webkit-scrollbar-thumb:hover {
+      background: var(--text-muted);
+    }
+
+    .history-list li {
+      background: rgba(15, 23, 42, 0.4);
+      border: 1px solid var(--card-border);
+      padding: 0.875rem 1rem;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s ease;
+    }
+
+    .history-list li:hover {
+      background: rgba(15, 23, 42, 0.8);
+      border-color: var(--text-muted);
+      transform: translateX(2px);
+    }
+
+    /* Animation for new history items */
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(-10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .history-item-new {
+      animation: slideInRight 0.3s ease-out forwards;
+    }
+
+    .history-input {
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .history-arrow {
+      color: var(--primary);
+      font-weight: bold;
+    }
+
+    .history-outputs {
+      color: var(--text-muted);
+    }
+  </style>
+  <!-- Google Fonts for modern typography -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+  <div class="converter-card">
+    <h1>Temperature Converter</h1>
+
+    <!-- Input Section -->
+    <div class="input-section">
+      <input type="number" id="inputValue" placeholder="Enter temperature" />
+
+      <select id="unitSelect">
+        <option value="C">Celsius (°C)</option>
+        <option value="F">Fahrenheit (°F)</option>
+        <option value="K">Kelvin (K)</option>
+      </select>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn-primary" onclick="convert()">Convert</button>
+      <button class="btn-secondary" onclick="reset()">Reset</button>
+    </div>
+
+    <!-- Error Message -->
+    <p id="errorMsg"></p>
+
+    <!-- Result Cards -->
+    <div id="results" class="results-grid">
+      <div class="result-card">
+        <h3>Celsius</h3>
+        <p id="celsiusResult">--</p>
       </div>
-
-      <div class="action-buttons">
-        <button class="btn-primary" onclick="convert()">Convert</button>
-        <button class="btn-secondary" onclick="reset()">Reset</button>
+      <div class="result-card">
+        <h3>Fahrenheit</h3>
+        <p id="fahrenheitResult">--</p>
       </div>
-
-      <!-- Error Message -->
-      <p id="errorMsg"></p>
-
-      <!-- Result Cards -->
-      <div id="results" class="results-grid">
-        <div class="result-card">
-          <h3>Celsius</h3>
-          <p id="celsiusResult">--</p>
-        </div>
-        <div class="result-card">
-          <h3>Fahrenheit</h3>
-          <p id="fahrenheitResult">--</p>
-        </div>
-        <div class="result-card">
-          <h3>Kelvin</h3>
-          <p id="kelvinResult">--</p>
-        </div>
-      </div>
-
-      <!-- Formula Section -->
-      <div id="formulaBox" class="formula-box">
-        <h3>Formula Used</h3>
-        <p id="formulaText">--</p>
-      </div>
-
-      <!-- History Section -->
-      <div id="historySection" class="history-section">
-        <div class="history-header">
-          <h3>Recent Conversions</h3>
-          <button class="btn-clear" onclick="clearHistory()">Clear</button>
-        </div>
-        <ul id="historyList" class="history-list"></ul>
+      <div class="result-card">
+        <h3>Kelvin</h3>
+        <p id="kelvinResult">--</p>
       </div>
     </div>
 
-    <script>
-      function convert() {
-        let inputValue = document.getElementById("inputValue").value;
-        let unit       = document.getElementById("unitSelect").value;
-        let temp       = parseFloat(inputValue);
+    <!-- Formula Section -->
+    <div id="formulaBox" class="formula-box">
+      <h3>Formula Used</h3>
+      <p id="formulaText">--</p>
+    </div>
 
-        // Validation
-        if (inputValue === "" || isNaN(temp)) {
-          let errorMsg = document.getElementById("errorMsg");
-          errorMsg.textContent = "Please enter a valid temperature!";
-          errorMsg.classList.add("show");
-          return;
-        } else {
-          let errorMsg = document.getElementById("errorMsg");
-          errorMsg.textContent = "";
-          errorMsg.classList.remove("show");
-        }
+    <!-- History Section -->
+    <div id="historySection" class="history-section">
+      <div class="history-header">
+        <h3>Recent Conversions</h3>
+        <button class="btn-clear" onclick="clearHistory()">Clear</button>
+      </div>
+      <ul id="historyList" class="history-list"></ul>
+    </div>
+  </div>
 
-        // Conversion Logic
-        let celsius, fahrenheit, kelvin;
-        let formula;
+  <script>
+    function convert() {
+      let inputValue = document.getElementById("inputValue").value;
+      let unit = document.getElementById("unitSelect").value;
+      let temp = parseFloat(inputValue);
 
-        if (unit === "C") {
-          celsius    = temp;
-          fahrenheit = (temp * 9/5) + 32;
-          kelvin     = temp + 273.15;
-          formula    = "F = (C × 9/5) + 32 | K = C + 273.15";
-
-        } else if (unit === "F") {
-          celsius    = (temp - 32) * 5/9;
-          fahrenheit = temp;
-          kelvin     = (temp - 32) * 5/9 + 273.15;
-          formula    = "C = (F - 32) × 5/9 | K = (F - 32) × 5/9 + 273.15";
-
-        } else if (unit === "K") {
-          celsius    = temp - 273.15;
-          fahrenheit = (temp - 273.15) * 9/5 + 32;
-          kelvin     = temp;
-          formula    = "C = K - 273.15 | F = (K - 273.15) × 9/5 + 32";
-        }
-
-        // Show Results
-        document.getElementById("celsiusResult").textContent    = celsius.toFixed(2) + " °C";
-        document.getElementById("fahrenheitResult").textContent = fahrenheit.toFixed(2) + " °F";
-        document.getElementById("kelvinResult").textContent     = kelvin.toFixed(2) + " K";
-        document.getElementById("formulaText").textContent      = formula;
-
-        // Add to History
-        let historyList = document.getElementById("historyList");
-        let listItem    = document.createElement("li");
-        listItem.innerHTML = `<span class="history-input">${temp} °${unit}</span> <span class="history-arrow">→</span> <span class="history-outputs">${celsius.toFixed(1)}°C | ${fahrenheit.toFixed(1)}°F | ${kelvin.toFixed(1)}K</span>`;
-        
-        // Add animation class
-        listItem.classList.add("history-item-new");
-        historyList.prepend(listItem);
-        
-        // Remove animation class after it plays so it doesn't replay
-        setTimeout(() => {
-          listItem.classList.remove("history-item-new");
-        }, 300);
-      }
-
-      // Reset Function
-      function reset() {
-        document.getElementById("inputValue").value             = "";
-        document.getElementById("celsiusResult").textContent    = "--";
-        document.getElementById("fahrenheitResult").textContent = "--";
-        document.getElementById("kelvinResult").textContent     = "--";
-        document.getElementById("formulaText").textContent      = "--";
+      // Validation
+      if (inputValue === "" || isNaN(temp)) {
+        let errorMsg = document.getElementById("errorMsg");
+        errorMsg.textContent = "Please enter a valid temperature!";
+        errorMsg.classList.add("show");
+        return;
+      } else {
         let errorMsg = document.getElementById("errorMsg");
         errorMsg.textContent = "";
         errorMsg.classList.remove("show");
       }
 
-      // Clear History
-      function clearHistory() {
-        document.getElementById("historyList").innerHTML = "";
+      // Conversion Logic
+      let celsius, fahrenheit, kelvin;
+      let formula;
+
+      if (unit === "C") {
+        celsius = temp;
+        fahrenheit = (temp * 9 / 5) + 32;
+        kelvin = temp + 273.15;
+        formula = "F = (C × 9/5) + 32 | K = C + 273.15";
+
+      } else if (unit === "F") {
+        celsius = (temp - 32) * 5 / 9;
+        fahrenheit = temp;
+        kelvin = (temp - 32) * 5 / 9 + 273.15;
+        formula = "C = (F - 32) × 5/9 | K = (F - 32) × 5/9 + 273.15";
+
+      } else if (unit === "K") {
+        celsius = temp - 273.15;
+        fahrenheit = (temp - 273.15) * 9 / 5 + 32;
+        kelvin = temp;
+        formula = "C = K - 273.15 | F = (K - 273.15) × 9/5 + 32";
       }
 
-    </script>
-  </body>
+      // Show Results
+      document.getElementById("celsiusResult").textContent = celsius.toFixed(2) + " °C";
+      document.getElementById("fahrenheitResult").textContent = fahrenheit.toFixed(2) + " °F";
+      document.getElementById("kelvinResult").textContent = kelvin.toFixed(2) + " K";
+      document.getElementById("formulaText").textContent = formula;
+
+      // Add to History
+      let historyList = document.getElementById("historyList");
+      let listItem = document.createElement("li");
+      listItem.innerHTML = `<span class="history-input">${temp} °${unit}</span> <span class="history-arrow">→</span> <span class="history-outputs">${celsius.toFixed(1)}°C | ${fahrenheit.toFixed(1)}°F | ${kelvin.toFixed(1)}K</span>`;
+
+      // Add animation class
+      listItem.classList.add("history-item-new");
+      historyList.prepend(listItem);
+
+      // Remove animation class after it plays so it doesn't replay
+      setTimeout(() => {
+        listItem.classList.remove("history-item-new");
+      }, 300);
+    }
+
+    // Reset Function
+    function reset() {
+      document.getElementById("inputValue").value = "";
+      document.getElementById("celsiusResult").textContent = "--";
+      document.getElementById("fahrenheitResult").textContent = "--";
+      document.getElementById("kelvinResult").textContent = "--";
+      document.getElementById("formulaText").textContent = "--";
+      let errorMsg = document.getElementById("errorMsg");
+      errorMsg.textContent = "";
+      errorMsg.classList.remove("show");
+    }
+
+    // Clear History
+    function clearHistory() {
+      document.getElementById("historyList").innerHTML = "";
+    }
+
+  </script>
+</body>
+
 </html>
